@@ -1,5 +1,5 @@
-import xlrd
-import os
+import xlrd, os, datetime
+
 
 PATH = os.path.abspath("data/sheet_money.xlsx")
 WORKBOOK = xlrd.open_workbook(PATH)
@@ -43,12 +43,16 @@ def records_list():
     account_names = list()
     for row in range(1, RECORDS_WORKSHEET.nrows):
         evaluated_row = RECORDS_WORKSHEET.row(row)
-        date = evaluated_row[0].value
+        for col in range(RECORDS_WORKSHEET.ncols):
+            if col == 0 and row != 0:
+                date = evaluated_row[0].value
+                converted_date = xlrd.xldate_as_tuple(date, WORKBOOK.datemode)
+                to_print_date = datetime.datetime(*converted_date).strftime("%d/%m/%y")
         value = evaluated_row[1].value
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
-
-        dates.append(date)
+    
+        dates.append(to_print_date)
         values.append(value)
         descriptions.append(description)
         account_names.append(account_name)
