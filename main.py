@@ -7,7 +7,7 @@ RECORDS_WORKSHEET = WORKBOOK.sheet_by_index(0)
 ACCOUNTS_WORKSHEET = WORKBOOK.sheet_by_index(1)
 
 
-def accounts_client_acronym():
+def accounts_list():
     account_names = list()
     clients = list()
     acronyms = list()
@@ -20,12 +20,6 @@ def accounts_client_acronym():
         account_names.append(account_name)
         clients.append(client)
         acronyms.append(acronym)
-
-
-    # print(f'Nomes: {account_names}')
-    # print(f'Clientes: {clients}')
-    # print(f'Siglas: {acronyms}')
-
 
     client_object_list = list()
 
@@ -40,4 +34,37 @@ def accounts_client_acronym():
 
     print(client_object_list)
 
-accounts_client_acronym()
+accounts_list()
+
+def records_list():
+    dates = list()
+    values = list()
+    descriptions = list()
+    account_names = list()
+    for row in range(1, RECORDS_WORKSHEET.nrows):
+        evaluated_row = RECORDS_WORKSHEET.row(row)
+        date = evaluated_row[0].value
+        value = evaluated_row[1].value
+        description = evaluated_row[2].value
+        account_name = evaluated_row[3].value
+
+        dates.append(date)
+        values.append(value)
+        descriptions.append(description)
+        account_names.append(account_name)
+
+    records_object_list = list()
+
+    for i in range(len(dates)):
+         records_object_list.append(
+            {
+                'date': dates[i],
+                'value': values[i],
+                'description': descriptions[i],
+                'account_name': account_names[i]
+            }
+        )
+
+    print(records_object_list)
+
+records_list()
