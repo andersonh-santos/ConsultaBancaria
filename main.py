@@ -48,10 +48,15 @@ def records_list():
                 date = evaluated_row[0].value
                 converted_date = xlrd.xldate_as_tuple(date, WORKBOOK.datemode)
                 to_print_date = datetime.datetime(*converted_date).strftime("%d/%m/%y")
+                
         value = evaluated_row[1].value
+        if value == "":
+            continue
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
-    
+        if account_name == "":
+            continue
+
         dates.append(to_print_date)
         values.append(value)
         descriptions.append(description)
