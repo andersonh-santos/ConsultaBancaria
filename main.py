@@ -51,10 +51,14 @@ def records_list():
                 
         value = evaluated_row[1].value
         if value == "":
+            arq = open("error_log.txt","w")
+            arq.write(f"Célula sem valor na linha {row +1}, coluna {col -1}, portanto a linha será ignorada.\n")
             continue
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
         if account_name == "":
+            arq = open("error_log.txt","a")
+            arq.write(f"Célula sem conta na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
             continue
 
         dates.append(to_print_date)
