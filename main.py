@@ -32,7 +32,7 @@ def accounts_list():
             }
         )
 
-    print(client_object_list)
+    return client_object_list
 
 accounts_list()
 
@@ -51,10 +51,14 @@ def records_list():
                 
         value = evaluated_row[1].value
         if value == "":
+            arq = open("error_log.txt","w")
+            arq.write(f"Célula sem valor na linha {row +1}, coluna {col -1}, portanto a linha será ignorada.\n")
             continue
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
         if account_name == "":
+            arq = open("error_log.txt","a")
+            arq.write(f"Célula sem conta na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
             continue
 
         dates.append(to_print_date)
@@ -74,6 +78,16 @@ def records_list():
             }
         )
 
-    print(records_object_list)
+    return records_object_list
 
 records_list()
+    
+
+def read_error_log():
+    arq = open("error_log.txt")
+    linhas = arq.readlines()
+    print("Lista de logs: \n")
+    for linha in linhas:
+        print(linha)
+
+read_error_log()
