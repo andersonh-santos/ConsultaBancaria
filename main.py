@@ -32,7 +32,7 @@ def accounts_list():
             }
         )
 
-    print(client_object_list)
+    return client_object_list
 
 accounts_list()
 
@@ -79,6 +79,16 @@ def records_list():
             }
         )
 
-    print(records_object_list)
+    return records_object_list
 
 records_list()
+    
+
+def read_error_log():
+    arq = open("error_log.txt")
+    linhas = arq.readlines()
+    print("Lista de logs: \n")
+    for linha in linhas:
+        print(linha)
+
+read_error_log()
