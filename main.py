@@ -1,11 +1,9 @@
 import xlrd, os, datetime
 
-
 PATH = os.path.abspath("data/sheet_money.xlsx")
 WORKBOOK = xlrd.open_workbook(PATH)
 RECORDS_WORKSHEET = WORKBOOK.sheet_by_index(0)
 ACCOUNTS_WORKSHEET = WORKBOOK.sheet_by_index(1)
-
 
 def accounts_list():
     account_names = list()
@@ -90,4 +88,42 @@ def read_error_log():
     for linha in linhas:
         print(linha)
 
-read_error_log()
+def menu():
+    print("Consulta WLC. Selecione uma das opções abaixo:")
+    print("1 - Para consultar o saldo total por pessoa;")
+    print("2 - Para consultar o saldo total por conta;")
+    print("3 - Para consultar o total de todas as contas por data;")
+    print("4 - Para consultar o log de erros;")
+    print("5 - Para sair")
+
+while True:
+
+    menu()
+    
+    try:
+        authentication = int(input("Digite uma opção válida para consulta: "))
+    except ValueError:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Insira um valor válido.")
+        continue
+
+    if authentication == 1:
+        os.system('cls' if os.name == 'nt' else 'clear')
+#TODO
+    elif authentication == 2:
+        os.system('cls' if os.name == 'nt' else 'clear')
+#TODO
+    elif authentication == 3:
+        os.system('cls' if os.name == 'nt' else 'clear')
+#TODO        
+    elif authentication == 4:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        read_error_log()
+    elif authentication == 5:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Encerrando a consulta...")
+        break
+    else:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Opção inválida! Favor inserir uma opção válida.")
+        continue
