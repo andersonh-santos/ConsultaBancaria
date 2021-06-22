@@ -32,7 +32,7 @@ def accounts_list():
 
     return client_object_list
 
-accounts_list()
+print(accounts_list())
 
 def records_list():
     dates = list()
@@ -78,8 +78,20 @@ def records_list():
 
     return records_object_list
 
-records_list()
+print(records_list())
     
+#lista que traz cliente e sigla da planilha contas
+def account_acronym_list():
+    account_acronym = list()
+    client = ""
+    acronym = ""
+    for row in range(1, ACCOUNTS_WORKSHEET.nrows):
+        evaluated_row = ACCOUNTS_WORKSHEET.row(row)
+        client = evaluated_row[1].value
+        acronym = evaluated_row[2].value
+        account_acronym.append([client, acronym])
+    return account_acronym
+
 
 def read_error_log():
     arq = open("error_log.txt")
