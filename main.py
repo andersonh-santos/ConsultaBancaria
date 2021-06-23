@@ -5,7 +5,7 @@ WORKBOOK = xlrd.open_workbook(PATH)
 RECORDS_WORKSHEET = WORKBOOK.sheet_by_index(0)
 ACCOUNTS_WORKSHEET = WORKBOOK.sheet_by_index(1)
 
-def accounts_list():
+def read_account_list():
     account_names = list()
     clients = list()
     acronyms = list()
@@ -32,9 +32,8 @@ def accounts_list():
 
     return client_object_list
 
-print(accounts_list())
 
-def records_list():
+def read_record_list():
     dates = list()
     values = list()
     descriptions = list()
@@ -49,14 +48,14 @@ def records_list():
                 
         value = evaluated_row[1].value
         if value == "":
-            arq = open("error_log.txt","w")
-            arq.write(f"Célula sem valor na linha {row +1}, coluna {col -1}, portanto a linha será ignorada.\n")
+            file = open("error_log.txt","w")
+            file.write(f"Célula sem valor na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
             continue
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
         if account_name == "":
-            arq = open("error_log.txt","a")
-            arq.write(f"Célula sem conta na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
+            file = open("error_log.txt","a")
+            file.write(f"Célula sem conta na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
             continue
 
         dates.append(to_print_date)
@@ -78,29 +77,19 @@ def records_list():
 
     return records_object_list
 
-print(records_list())
+read_record_list()
     
-#lista que traz cliente e sigla da planilha contas
-def account_acronym_list():
-    account_acronym = list()
-    client = ""
-    acronym = ""
-    for row in range(1, ACCOUNTS_WORKSHEET.nrows):
-        evaluated_row = ACCOUNTS_WORKSHEET.row(row)
-        client = evaluated_row[1].value
-        acronym = evaluated_row[2].value
-        account_acronym.append([client, acronym])
-    return account_acronym
-
-
+    
 def read_error_log():
-    arq = open("error_log.txt")
-    linhas = arq.readlines()
+    archive = open("error_log.txt")
+    lines = archive.readlines()
     print("Lista de logs: \n")
-    for linha in linhas:
-        print(linha)
+    for line in lines:
+        print(line)
 
-def menu():
+read_error_log()
+
+def create_menu():
     print("Consulta WLC. Selecione uma das opções abaixo:")
     print("1 - Para consultar o saldo total por pessoa;")
     print("2 - Para consultar o saldo total por conta;")
@@ -110,7 +99,7 @@ def menu():
 
 while True:
 
-    menu()
+    create_menu()
     
     try:
         authentication = int(input("Digite uma opção válida para consulta: "))
