@@ -19,10 +19,10 @@ def read_account_list():
         clients.append(client)
         acronyms.append(acronym)
 
-    client_object_list = list()
+    clients_object_list = list()
 
     for i in range(len(account_names)):
-        client_object_list.append(
+        clients_object_list.append(
             {
                 'account_name': account_names[i],
                 'client': clients[i],
@@ -30,7 +30,7 @@ def read_account_list():
             }
         )
 
-    return client_object_list
+    return clients_object_list
 
 
 def read_record_list():
@@ -49,7 +49,7 @@ def read_record_list():
         value = evaluated_row[1].value
         if value == "":
             file = open("error_log.txt","w")
-            file.write(f"Célula sem valor na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
+            file.write(f"Célula sem valor na linha {row +1}, coluna {col -1}, portanto a linha será ignorada.\n")
             continue
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
@@ -76,10 +76,32 @@ def read_record_list():
         )
 
     return records_object_list
+    
+RECORDS = read_record_list()
+ACCOUNTS = read_account_list()
 
-read_record_list()
-    
-    
+def read_total_by_account(RECORDS):
+    total_by_account = dict()
+    for account in RECORDS:
+        total_by_account[account["account_name"]] = 0
+    for account_name in RECORDS:
+        total_by_account[account_name["account_name"]] += account_name["value"]
+    print("Lista do saldo total por conta:")
+    for account_name in total_by_account:
+        print(f"O saldo de todas as contas é {account_name}: {total_by_account[account_name]}")
+
+
+def read_total_by_date(RECORDS):
+    date_dict = dict()
+    for date in RECORDS:
+        date_dict[date["date"]] = 0
+    for date in RECORDS:
+        date_dict[date["date"]] += date["value"]
+    print("Lista do saldo total por data:")
+    for date in date_dict:
+        print(f"O saldo de todas as contas na data {date} é de: {date_dict[date]}")
+
+
 def read_error_log():
     archive = open("error_log.txt")
     lines = archive.readlines()
@@ -87,10 +109,9 @@ def read_error_log():
     for line in lines:
         print(line)
 
-read_error_log()
 
 def create_menu():
-    print("Consulta WLC. Selecione uma das opções abaixo:")
+    print("\nConsulta WLC. Selecione uma das opções abaixo:")
     print("1 - Para consultar o saldo total por pessoa;")
     print("2 - Para consultar o saldo total por conta;")
     print("3 - Para consultar o total de todas as contas por data;")
@@ -111,12 +132,12 @@ while True:
     if authentication == 1:
         os.system('cls' if os.name == 'nt' else 'clear')
 #TODO
-    elif authentication == 2:
+    elif authentication == 2:       
         os.system('cls' if os.name == 'nt' else 'clear')
-#TODO
+        read_total_by_account(RECORDS)  
     elif authentication == 3:
-        os.system('cls' if os.name == 'nt' else 'clear')
-#TODO        
+        os.system('cls' if os.name == 'nt' else 'clear')  
+        read_total_by_date(RECORDS)      
     elif authentication == 4:
         os.system('cls' if os.name == 'nt' else 'clear')
         read_error_log()
