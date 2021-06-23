@@ -76,9 +76,29 @@ def read_record_list():
         )
 
     return records_object_list
-    
+
+ACCOUNTS = read_account_list() 
 RECORDS = read_record_list()
-ACCOUNTS = read_account_list()
+
+def read_total_by_person(RECORDS, ACCOUNTS):
+    people_accounts = dict()
+    for account in ACCOUNTS:
+        if account["client"] in people_accounts.keys():
+            people_accounts[account["client"]].append(account["acronym"])
+        else:
+            people_accounts[account["client"]] = [account["acronym"]]
+
+    total_by_people = dict()
+    for account in ACCOUNTS:
+        total_by_people[account["client"]] = 0
+    for record in RECORDS:
+        for person in people_accounts:
+            if record["account_name"] in people_accounts[person]:
+                total_by_people[person] += record["value"]
+    print("Lista do saldo total por pessoa:")
+    for total in total_by_people:
+        print(f"O saldo total da {total} é de {total_by_people[total]}")
+
 
 def read_total_by_account(RECORDS):
     total_by_account = dict()
@@ -131,7 +151,7 @@ while True:
 
     if authentication == 1:
         os.system('cls' if os.name == 'nt' else 'clear')
-#TODO
+        read_total_by_person(RECORDS, ACCOUNTS)
     elif authentication == 2:       
         os.system('cls' if os.name == 'nt' else 'clear')
         read_total_by_account(RECORDS)  
