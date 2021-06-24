@@ -1,13 +1,11 @@
 import xlrd, os, datetime
 
-
 PATH = os.path.abspath("data/sheet_money.xlsx")
 WORKBOOK = xlrd.open_workbook(PATH)
 RECORDS_WORKSHEET = WORKBOOK.sheet_by_index(0)
 ACCOUNTS_WORKSHEET = WORKBOOK.sheet_by_index(1)
 
-
-def accounts_list():
+def read_account_list():
     account_names = list()
     clients = list()
     acronyms = list()
@@ -21,10 +19,10 @@ def accounts_list():
         clients.append(client)
         acronyms.append(acronym)
 
-    client_object_list = list()
+    clients_object_list = list()
 
     for i in range(len(account_names)):
-        client_object_list.append(
+        clients_object_list.append(
             {
                 'account_name': account_names[i],
                 'client': clients[i],
@@ -32,11 +30,10 @@ def accounts_list():
             }
         )
 
-    print(client_object_list)
+    return clients_object_list
 
-accounts_list()
 
-def records_list():
+def read_record_list():
     dates = list()
     values = list()
     descriptions = list()
@@ -51,14 +48,14 @@ def records_list():
                 
         value = evaluated_row[1].value
         if value == "":
-            arq = open("error_log.txt","w")
-            arq.write(f"Célula sem valor na linha {row +1}, coluna {col -1}, portanto a linha será ignorada.\n")
+            file = open("error_log.txt","w")
+            file.write(f"Célula sem valor na linha {row +1}, coluna {col -1}, portanto a linha será ignorada.\n")
             continue
         description = evaluated_row[2].value
         account_name = evaluated_row[3].value
         if account_name == "":
-            arq = open("error_log.txt","a")
-            arq.write(f"Célula sem conta na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
+            file = open("error_log.txt","a")
+            file.write(f"Célula sem conta na linha {row +1}, coluna {col +1}, portanto a linha será ignorada.\n")
             continue
 
 
@@ -79,6 +76,97 @@ def records_list():
             }
         )
 
-    print(records_object_list)
+    return records_object_list
 
-records_list()
+ACCOUNTS = read_account_list() 
+RECORDS = read_record_list()
+
+def read_total_by_person(RECORDS, ACCOUNTS):
+    people_accounts = dict()
+    for account in ACCOUNTS:
+        if account["client"] in people_accounts.keys():
+            people_accounts[account["client"]].append(account["acronym"])
+        else:
+            people_accounts[account["client"]] = [account["acronym"]]
+
+    total_by_people = dict()
+    for account in ACCOUNTS:
+        total_by_people[account["client"]] = 0
+    for record in RECORDS:
+        for person in people_accounts:
+            if record["account_name"] in people_accounts[person]:
+                total_by_people[person] += record["value"]
+    print("Lista do saldo total por pessoa:")
+    for total in total_by_people:
+        print(f"O saldo total da {total} é de {total_by_people[total]}")
+
+
+def read_total_by_account(RECORDS):
+    total_by_account = dict()
+    for account in RECORDS:
+        total_by_account[account["account_name"]] = 0
+    for account_name in RECORDS:
+        total_by_account[account_name["account_name"]] += account_name["value"]
+    print("Lista do saldo total por conta:")
+    for account_name in total_by_account:
+        print(f"O saldo de todas as contas é {account_name}: {total_by_account[account_name]}")
+
+
+def read_total_by_date(RECORDS):
+    date_dict = dict()
+    for date in RECORDS:
+        date_dict[date["date"]] = 0
+    for date in RECORDS:
+        date_dict[date["date"]] += date["value"]
+    print("Lista do saldo total por data:")
+    for date in date_dict:
+        print(f"O saldo de todas as contas na data {date} é de: {date_dict[date]}")
+
+
+def read_error_log():
+    archive = open("error_log.txt")
+    lines = archive.readlines()
+    print("Lista de logs: \n")
+    for line in lines:
+        print(line)
+
+
+def create_menu():
+    print("\nConsulta WLC. Selecione uma das opções abaixo:")
+    print("1 - Para consultar o saldo total por pessoa;")
+    print("2 - Para consultar o saldo total por conta;")
+    print("3 - Para consultar o total de todas as contas por data;")
+    print("4 - Para consultar o log de erros;")
+    print("5 - Para sair")
+
+while True:
+
+    create_menu()
+    
+    try:
+        authentication = int(input("Digite uma opção válida para consulta: "))
+    except ValueError:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Insira um valor válido.")
+        continue
+
+    if authentication == 1:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        read_total_by_person(RECORDS, ACCOUNTS)
+    elif authentication == 2:       
+        os.system('cls' if os.name == 'nt' else 'clear')
+        read_total_by_account(RECORDS)  
+    elif authentication == 3:
+        os.system('cls' if os.name == 'nt' else 'clear')  
+        read_total_by_date(RECORDS)      
+    elif authentication == 4:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        read_error_log()
+    elif authentication == 5:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Encerrando a consulta...")
+        break
+    else:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Opção inválida! Favor inserir uma opção válida.")
+        continue
